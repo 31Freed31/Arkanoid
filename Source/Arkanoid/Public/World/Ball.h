@@ -73,4 +73,8 @@ protected:
 
 	void SetBallState(const EState NewState);
 
+public:
+
+	FORCEINLINE int32 GetPower() const { return Power; };
+
 };
