@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Ball.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeadEvent);
+
 class UArrowComponent;
 
 UENUM(BlueprintType)
@@ -31,7 +33,7 @@ struct FInitParameters
 
 	FInitParameters()
 	{
-		Scale = 1.0f;
+		Scale = 0.5f;
 		Power = 1;
 		Speed = 500.0f;
 		MaxSpeed = 2500.0f;
@@ -58,10 +60,14 @@ private:
 public:
 	ABall();
 
+	UPROPERTY(BlueprintAssignable)
+	FOnDeadEvent OnDeadEvent;
+
 protected:
 	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+	virtual void Destroyed() override;
 
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Settings")
@@ -71,10 +77,11 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = Ball)
 	void Move(const float DeltaTime);
 
-	void SetBallState(const EState NewState);
 
 public:
 
 	FORCEINLINE int32 GetPower() const { return Power; };
+
+	void SetBallState(const EState NewState);
 
 };
