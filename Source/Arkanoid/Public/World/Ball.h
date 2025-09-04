@@ -95,4 +95,7 @@ public:
 	void ChangeSpeed(const float Amount);
 
 	void ChangeBallPower(const int32 Amount, const float BonusTime);
+
+	UFUNCTION()
+	void SplitBall();
 };

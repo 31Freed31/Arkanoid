@@ -3,6 +3,7 @@
 
 #include "World/Ball.h"
 #include "Components/ArrowComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABall::ABall()
@@ -148,6 +149,25 @@ void ABall::ChangeBallPower(const int32 Amount, const float BonusTime)
 
 		GetWorld()->GetTimerManager().SetTimer(TimerBallPower, this,
 			&ABall::ResetBallPower, BonusTime, true);
+	}
+}
+
+void ABall::SplitBall()
+{
+	FVector Location = GetActorLocation();
+	FRotator Rotation = GetActorRotation();
+
+	FRotator NewRotation = Rotation;
+	NewRotation.Yaw += 20.0f;
+
+	FVector SpawnOffset = NewRotation.Vector().GetSafeNormal() * 30.0f;
+	FVector NewLocation = Location + SpawnOffset;
+
+	ABall* NewBall = GetWorld()->SpawnActor<ABall>(GetClass(), NewLocation, NewRotation);
+	if (NewBall)
+	{
+		NewBall->SetBallState(EState::Moving);
+		NewBall->Direction = NewRotation.Vector().GetSafeNormal();
 	}
 }
 
