@@ -20,6 +20,12 @@ void APaddle::SpawnBallLives()
 		return;
 	}
 
+	for (auto BallLive : BallLives)
+	{
+		BallLive->DestroyComponent();
+	}
+	BallLives.Empty();
+
 	for (int8 i = 0; i < Lives - 1; ++i)
 	{
 		auto NewMeshComponent = NewObject<UStaticMeshComponent>(this, *FString::Printf(TEXT("Lives %d"), i + 1 ));
@@ -170,8 +176,8 @@ void APaddle::SpawnBall()
 			CurrentBall->SetOwner(this); 
 			CurrentBall->SetBallState(EState::Idle);
 			CurrentBall->OnDeadEvent.AddDynamic(this, &APaddle::BallIsDead);
-			CurrentBall->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
-
+			//CurrentBall->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+			CurrentBall->AttachToComponent(Arrow, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 		}
 	}
 }
@@ -187,6 +193,53 @@ void APaddle::BallIsDead()
 		BallLives[Lives-1]->DestroyComponent();
 		BallLives.RemoveAt(Lives - 1);
 		UpdateBallLivesLocation();
+	}
+}
+
+void APaddle::SetDefaultSize()
+{
+	SetActorScale3D(DefaultScale);
+	BoxCollider->SetBoxExtent(FVector(25.0f, 50.0f + 20.0f / DefaultScale.Y, 25.0f));
+}
+
+void APaddle::BonusChangeSize(const float AdditionalSize, const float BonusTime)
+{
+
+	if (AdditionalSize && BonusTime)
+	{
+		if (!GetWorld()->GetTimerManager().IsTimerActive(TimerForBonusSize))
+		{
+			FVector TempScale = GetActorScale3D();
+			TempScale.Y = TempScale.Y + TempScale.Y * AdditionalSize;
+			SetActorScale3D(TempScale);
+			BoxCollider->SetBoxExtent(FVector(25.0f, 50.0f + 20.0f / TempScale.Y, 25.0f));
+		}
+
+		GetWorld()->GetTimerManager().SetTimer(TimerForBonusSize, this,
+		&APaddle::SetDefaultSize , BonusTime, false);
+	
+	}
+}
+
+void APaddle::BonusChangeLife(const int32 Amount)
+{
+	Lives += Amount;
+	SpawnBallLives();
+}
+
+void APaddle::BonusChangeBallSpeed(const float Amount)
+{
+	if (IsValid(CurrentBall))
+	{
+		CurrentBall->ChangeSpeed(Amount);
+	}
+}
+
+void APaddle::BonusChangeBallPower(const int32 Amount, const float BonusTime)
+{
+	if (IsValid(CurrentBall))
+	{
+		CurrentBall->ChangeBallPower(Amount, BonusTime);
 	}
 }
 

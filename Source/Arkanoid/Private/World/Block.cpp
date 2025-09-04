@@ -4,6 +4,7 @@
 #include "World/Block.h"
 
 #include "Components/LifeComponent.h"
+#include "Bonuses/BonusParent.h"
 #include "World/Ball.h"
 
 // Sets default values
@@ -42,7 +43,9 @@ void ABlock::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other,
 			{
 				if (BonusClass && GetWorld())
 				{
-					GetWorld()->SpawnActor<AActor>(BonusClass, GetActorLocation(), GetActorRotation());
+					auto CurrentBonus = GetWorld()->SpawnActor<ABonusParent>(
+						BonusClass, GetActorLocation(), GetActorRotation());
+					CurrentBonus->InitScale(GetActorScale3D());
 				}
 
 				Destroy();
@@ -58,7 +61,7 @@ void ABlock::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other,
 
 
 void ABlock::Init(const FVector NewScale, const int32 LifeAmount,
-	const TSubclassOf<AActor> NewBonusClass)
+	const TSubclassOf<ABonusParent> NewBonusClass)
 {
 	SetActorScale3D(NewScale);
 	BonusClass = NewBonusClass;

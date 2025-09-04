@@ -2,8 +2,9 @@
 
 
 #include "World/PlayingBoard.h"
+#include "Bonuses/BonusParent.h"
 #include "World/Block.h"
-#include <Kismet/KismetMathLibrary.h>
+#include "Kismet/KismetMathLibrary.h"
 
 void APlayingBoard::CreatePreviewComponents()
 {
@@ -135,7 +136,7 @@ void APlayingBoard::BeginPlay()
 	
 }
 
-TSubclassOf<AActor> APlayingBoard::GetBonusClass()
+TSubclassOf<ABonusParent> APlayingBoard::GetBonusClass()
 {
     if (BonusTypeByChance.Num() == 0 || !BonusTypeByChance[0].BonusClass)
     {
@@ -149,7 +150,7 @@ TSubclassOf<AActor> APlayingBoard::GetBonusClass()
 		TotalWeight += CurrentBonus.DropChance * 100;
 	}
 
-	int32 RandomWeight = UKismetMathLibrary::RandomInteger(32767) % TotalWeight;
+	int32 RandomWeight = FMath::RandHelper(TotalWeight);
 
 	for (const auto& CurrentBonus : BonusTypeByChance)
 	{
@@ -164,4 +165,25 @@ TSubclassOf<AActor> APlayingBoard::GetBonusClass()
 	}
 
 	return nullptr;
+}
+
+void APlayingBoard::BonusDestroyCubes(const int32 Amount)
+{
+	if (Amount <= 0)
+	{
+		return;
+	}
+
+	const int32 NumToDestroy = FMath::Min(Amount, BlockActors.Num());
+
+	for (int32 i = 0; i < NumToDestroy; i++)
+	{
+		const int32 RandomIndex = FMath::RandHelper(BlockActors.Num());
+
+		if (BlockActors.IsValidIndex(RandomIndex))
+		{
+			BlockActors[RandomIndex]->Destroy();
+		}
+	}
+
 }

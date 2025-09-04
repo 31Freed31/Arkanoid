@@ -83,7 +83,8 @@ protected:
 public:	
 
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Settings | Game", meta = (Tooltip = "Class ball for spawn"))
+	UPROPERTY(EditDefaultsOnly, Category = "Settings | Game",
+		meta = (Tooltip = "Class ball for spawn"))
 	TSubclassOf<ABall> BallClass = nullptr;
 	UPROPERTY(EditDefaultsOnly, Category = "Settings | Game")
 	int32 Lives = 3;
@@ -92,4 +93,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Settings | Game")
 	float Speed = 2000.0f;
 
+	// Work with bonuses
+
+protected:
+
+	FTimerHandle TimerForBonusSize;
+	UFUNCTION()
+	void SetDefaultSize();
+
+public:
+
+	void BonusChangeSize(const float AdditionalSize, const float BonusTime);
+	void BonusChangeLife(const int32 Amount);
+	void BonusChangeBallSpeed(const float Amount);
+	void BonusChangeBallPower(const int32 Amount, const float BonusTime);
 };

@@ -62,6 +62,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnDeadEvent OnDeadEvent;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Settings")
+	UMaterialInterface* PowerMaterial = nullptr;
 
 protected:
 	virtual void OnConstruction(const FTransform& Transform) override;
@@ -77,6 +79,12 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = Ball)
 	void Move(const float DeltaTime);
 
+	//Bonus
+	FTimerHandle TimerBallPower;
+	UPROPERTY()
+	UMaterialInterface* DefaultMaterial = nullptr;
+	void UpdateBallMaterial();
+	void ResetBallPower();
 
 public:
 
@@ -84,4 +92,7 @@ public:
 
 	void SetBallState(const EState NewState);
 
+	void ChangeSpeed(const float Amount);
+
+	void ChangeBallPower(const int32 Amount, const float BonusTime);
 };
