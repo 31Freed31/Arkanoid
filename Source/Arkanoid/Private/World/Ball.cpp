@@ -92,7 +92,7 @@ void ABall::Move(const float DeltaTime)
 			Speed = FMath::Min(Speed, InitParameters.MaxSpeed);
 		}
 
-		UE_LOG(LogTemp, Warning, TEXT("Ball name %s is speed %f"), *GetName(), Speed);
+		//UE_LOG(LogTemp, Warning, TEXT("Ball name %s is speed %f"), *GetName(), Speed);
 	}
 }
 
