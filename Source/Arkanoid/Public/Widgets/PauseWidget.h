@@ -10,6 +10,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameResume);
 
 class UTextBlock;
 class UButton;
+class USoundBase;
 
 UCLASS()
 class ARKANOID_API UPauseWidget : public UUserWidget
@@ -41,6 +42,12 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "PauseWidget")
 	FOnGameResume OnGameResume;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "PauseWidget")
+	USoundBase* WinSound = nullptr;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PauseWidget")
+	USoundBase* LooseSound = nullptr;
+
 
 	void SetWinStatus(const bool bWinStatus);
 };

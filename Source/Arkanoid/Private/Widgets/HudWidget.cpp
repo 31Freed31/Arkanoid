@@ -5,6 +5,8 @@
 #include "Components/TextBlock.h"
 #include "Framework/ArkanoidGameState.h"
 #include "Framework/ArkanoidPlayerState.h"
+#include "Framework/ArkanoidGameInstance.h"
+#include "Kismet/GameplayStatics.h"
 
 void UHudWidget::NativeConstruct()
 {
@@ -19,6 +21,8 @@ void UHudWidget::NativeConstruct()
 
 	if (GetWorld())
 		GameState = Cast<AArkanoidGameState>(GetWorld()->GetGameState());
+
+	UpdateRecordOnScreen();
 }
 
 void UHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -41,7 +45,7 @@ void UHudWidget::UpdateScore(const int32 NewScore)
 			PlayAnimation(ShakeAnimation, 0.0f, 3 , EUMGSequencePlayMode::Forward , 1.0f);
 		}
 	}
-
+	UpdateRecordOnScreen();
 }
 
 void UHudWidget::UpdateTime()
@@ -54,5 +58,20 @@ void UHudWidget::UpdateTime()
 		const FString TimeString = FString::Printf(TEXT("%02d : %02d : %03d"),
 			Minutes, Seconds, Milliseconds);
 		GameTime->SetText(FText::FromString(TimeString));
+	}
+}
+
+void UHudWidget::UpdateRecordOnScreen()
+{
+	if (LevelRecord)
+	{
+		if (const auto GI = Cast<UArkanoidGameInstance>(GetGameInstance()))
+		{
+			const int32 CurrentRecord = GI->GetLevelRecord(UGameplayStatics::GetCurrentLevelName(this));
+			const FString ScoreText = FString::Printf(TEXT("Record: %03d"), CurrentRecord);
+			LevelRecord->SetText(FText::FromString(*ScoreText));
+
+		}
+		
 	}
 }

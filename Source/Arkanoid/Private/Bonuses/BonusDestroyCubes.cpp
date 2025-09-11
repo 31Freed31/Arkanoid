@@ -16,6 +16,7 @@ void ABonusDestroyCubes::BonusAction(APaddle* Paddle)
 		if (const auto CurrentBoard = *It)
 		{
 			CurrentBoard->BonusDestroyCubes(Value);
+			Destroy();
 			return;
 		}
 	}

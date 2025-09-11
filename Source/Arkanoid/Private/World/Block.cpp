@@ -44,16 +44,12 @@ void ABlock::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other,
 			{
 				if (BonusClass && GetWorld())
 				{
-					auto CurrentBonus = GetWorld()->SpawnActor<ABonusParent>(
+					const auto CurrentBonus = GetWorld()->SpawnActor<ABonusParent>(
 						BonusClass, GetActorLocation(), GetActorRotation());
-					CurrentBonus->InitScale(GetActorScale3D());
+					//CurrentBonus->InitScale(GetActorScale3D());
 				}
 
-				if (const auto Pawn = Cast<APawn>(Other->GetOwner()))
-				{
-					if (auto PlayerState = Cast<AArkanoidPlayerState>(Pawn->GetPlayerState()))
-						PlayerState->ChangePlayerScore(ScoreByLife * MaxLife);
-				}
+				AwardScore();
 				Destroy();
 			}
 			else
@@ -65,7 +61,6 @@ void ABlock::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other,
 	}
 }
 
-
 void ABlock::Init(const FVector NewScale, const int32 LifeAmount,
 	const TSubclassOf<ABonusParent> NewBonusClass)
 {
@@ -76,4 +71,15 @@ void ABlock::Init(const FVector NewScale, const int32 LifeAmount,
 
 	if (LifeMaterials.IsValidIndex(LifeComponent->GetLife() - 1))
 		StaticMesh->SetMaterial(0, LifeMaterials[LifeComponent->GetLife() - 1]);
+}
+
+void ABlock::AwardScore()
+{
+	if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
+	{
+		if (AArkanoidPlayerState* PlayerState = Cast<AArkanoidPlayerState>(PC->PlayerState))
+		{
+			PlayerState->ChangePlayerScore(ScoreByLife * MaxLife);
+		}
+	}
 }

@@ -38,6 +38,9 @@ void UPauseWidget::SetWinStatus(const bool bWinStatus)
 {
 	if (!StatusText)
 		return; 
+
+	UGameplayStatics::PlaySound2D(this, bWinStatus ? WinSound : LooseSound);
+
 	if (ResumeButton)
 	{
 		ResumeButton->SetIsEnabled(false);

@@ -21,6 +21,8 @@ private:
 	UTextBlock* CurrentScore = nullptr;
 	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = true))
 	UTextBlock* GameTime = nullptr;
+	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = true))
+	UTextBlock* LevelRecord = nullptr;
 	UPROPERTY(Transient , meta = (BindWidgetAnim, AllowPrivateAccess = true))
 	UWidgetAnimation* ShakeAnimation = nullptr;
 
@@ -36,5 +38,7 @@ protected:
 	UFUNCTION()
 	void UpdateScore(const int32 NewScore);
 	void UpdateTime();
+
+	void UpdateRecordOnScreen();
 
 };

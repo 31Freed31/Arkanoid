@@ -28,6 +28,8 @@ private:
 
 	int32 MaxLife = 1;
 
+	void AwardScore();
+
 public:
 	// Sets default values for this actor's properties
 	ABlock();

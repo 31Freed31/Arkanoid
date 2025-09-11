@@ -9,6 +9,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeadEvent);
 
 class UArrowComponent;
+class UAudioComponent;
 
 UENUM(BlueprintType)
 enum class EState : uint8
@@ -51,6 +52,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UArrowComponent* ForwardArrow = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UAudioComponent* AudioComponent = nullptr;
 
 	int32 Power = 1;
 	float Speed = 0.0f;

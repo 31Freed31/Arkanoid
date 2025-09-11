@@ -4,6 +4,7 @@
 #include "World/Ball.h"
 #include "Components/ArrowComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 ABall::ABall()
@@ -15,6 +16,10 @@ ABall::ABall()
 
 	ForwardArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Forward Arrow"));
 	ForwardArrow->SetupAttachment(StaticMesh);
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
+	AudioComponent->SetupAttachment(StaticMesh);
+	AudioComponent->SetAutoActivate(false);
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshAsset(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
 
@@ -82,6 +87,8 @@ void ABall::Move(const float DeltaTime)
 
 	if (HitResult.bBlockingHit)
 	{
+		AudioComponent->Play();
+
 		Direction = Direction - 2 * (FVector::DotProduct(Direction, HitResult.Normal)) * HitResult.Normal;
 		Direction.Z = 0.0f;
 		Direction = Direction.GetSafeNormal();
